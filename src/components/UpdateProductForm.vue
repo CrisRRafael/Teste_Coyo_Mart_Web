@@ -22,9 +22,13 @@
     <div class="input-container">
       <label for="category">Categoria </label>
       <select name="category" id="category" class="text" v-model="category">
-        <option value="Categoria A">Categoria A</option>
-        <option value="Categoria B">Categoria B</option>
-        <option value="Categoria C">Categoria C</option>
+        <option
+          v-for="category in categoriesdata"
+          :key="category.id"
+          :value="category.description"
+        >
+          {{ category.description }}
+        </option>
       </select>
 
       <p class="error" v-for="error of v$.category.$errors" :key="error.$uid">
@@ -33,27 +37,32 @@
     </div>
     <div class="input-container">
       <label for="un">Unidade de Medida </label>
-      <select name="un" id="un" class="text" v-model="un">
-        <option value="Unidade">Unidade</option>
-        <option value="Metro">Metro</option>
-        <option value="kilo">Kilo</option>
+      <select name="un" id="un" class="text" v-model="unit">
+        <option
+          v-for="unit in unitsdata"
+          :key="unit.id"
+          :value="unit.description"
+        >
+          {{ unit.description }}
+        </option>
       </select>
+
       <p class="error" v-for="error of v$.un.$errors" :key="error.$uid">
         {{ error.$message }}
       </p>
     </div>
     <div class="input-container">
-      <label for="storage">Estoque </label>
+      <label for="stock">Estoque </label>
       <input
         class="text"
         type="text"
-        id="storage"
-        name="storage"
-        v-model="storage"
+        id="stock"
+        name="stock"
+        v-model="stock"
         placeholder="Informe a quantidade em estoque"
       />
 
-      <p class="error" v-for="error of v$.storage.$errors" :key="error.$uid">
+      <p class="error" v-for="error of v$.stock.$errors" :key="error.$uid">
         {{ error.$message }}
       </p>
     </div>
@@ -85,7 +94,7 @@
       <button
         class="submit-btn"
         value="Salvar"
-        @click="updateProduct($event, $route.params.id)"
+        @click="updateProduct(this.$route.params.id)"
       >
         Salvar
       </button>
@@ -103,6 +112,7 @@
 <script>
 import useVuelidate from "@vuelidate/core";
 import { helpers, numeric, required } from "@vuelidate/validators";
+import axios from "axios";
 
 export default {
   name: "NewProductForm",
@@ -112,10 +122,12 @@ export default {
       v$: useVuelidate(),
       description: null,
       category: null,
-      un: null,
-      storage: null,
+      unit: null,
+      stock: null,
       price: null,
       destaque: null,
+      unitsdata: null,
+      categoriesdata: null,
     };
   },
   validations() {
@@ -136,7 +148,7 @@ export default {
         ),
         $autoDirty: true,
       },
-      storage: {
+      stock: {
         required: helpers.withMessage(
           "Quantidade em estoque é obrigatório",
           required
@@ -159,44 +171,76 @@ export default {
   },
 
   methods: {
-    async deleteProduct(id) {
-      const reqD = await fetch(`http://localhost:3000/products/${id}`, {
-        method: "DELETE",
-      });
-      const resDelete = await reqD.json();
-      this.$router.go();
-      alert("Cadastro excluído com sucesso");
+    async updateProduct(id) {
+      if (
+        this.description != null &&
+        this.description != "" &&
+        this.category != null &&
+        this.category != "" &&
+        this.unit != null &&
+        this.unit != "" &&
+        this.stock != null &&
+        this.stock != "" &&
+        this.price != null &&
+        this.price != ""
+      ) {
+        const product = {
+          description: this.description,
+          category: this.category,
+          unit: this.unit,
+          stock: this.stock,
+          price: this.price,
+        };
+
+        await axios
+          .patch(`http://localhost:3000/products/${id}`, {
+            product,
+          })
+          .then((response) => {
+            this.isSuccess = true;
+            this.$router.push(`/`);
+          });
+        alert("Cadastro atualizado com sucesso");
+      } else {
+        alert("Você precisa preencher todos os campos");
+      }
     },
 
-    async updateProduct(event, id) {
-      const data = {
-        description: this.description,
-        category: this.category,
-        un: this.un,
-        storage: this.storage,
-        price: this.price,
-        destaque: this.destaque,
-      };
-
-      const dataJson = JSON.stringify(data);
-      const req = await fetch(`http://localhost:3000/products/${id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: dataJson,
-      });
-
-      alert("Dados atualizados com sucesso");
-
-      const res = await req.json();
+    async deleteProduct(id) {
+      await axios
+        .delete(`http://localhost:3000/products/${id}`, {})
+        .then((response) => {
+          this.isSuccess = true;
+          this.$router.push(`/`);
+        });
+      alert("Cadastro excluído com sucesso");
     },
   },
 
   submit(e) {
     this.$v.$touch();
   },
+  //   async deleteProduct(id) {
+  //     const reqD = await fetch(`http://localhost:3000/products/${id}`, {
+  //       method: "DELETE",
+  //     });
+  //     const resDelete = await reqD.json();
+  //     this.$router.go();
+  //     alert("Cadastro excluído com sucesso");
+  //   },
+
   async mounted() {
+    axios
+      .get("http://localhost:3000/units/")
+      .then((response) => (this.unitsdata = response.data))
+      .catch((error) => console.log(error));
+
+    axios
+      .get("http://localhost:3000/categories/")
+      .then((response) => (this.categoriesdata = response.data))
+      .catch((error) => console.log(error));
+
     const id = this.$route.params.id;
-    console.log(id);
 
     if (id != undefined) {
       const req = await fetch("http://localhost:3000/products");
@@ -205,10 +249,11 @@ export default {
 
       this.description = product[0].description;
       this.category = product[0].category;
-      this.un = product[0].un;
-      this.storage = product[0].storage;
+      this.unit = product[0].unit;
+      this.stock = product[0].stock;
       this.price = product[0].price;
       this.destaque = product[0].destaque;
+      this.id = product[0].id;
     }
   },
 };

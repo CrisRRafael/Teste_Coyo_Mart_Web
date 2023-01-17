@@ -4,7 +4,7 @@
       "description": "Produto 07",
       "category": "Categoria C",
       "un": "kilo",
-      "storage": "500",
+      "stock": "500",
       "price": "300",
       "destaque": null,
       "id": 1
@@ -13,7 +13,7 @@
       "description": "Produto 02",
       "category": "Categoria B",
       "un": "Metro",
-      "storage": "12",
+      "stock": "12",
       "price": "3",
       "destaque": null,
       "id": 2
@@ -22,7 +22,7 @@
       "description": "Produto 03",
       "category": "Categoria C",
       "un": "kilo",
-      "storage": "12",
+      "stock": "12",
       "price": "9",
       "destaque": null,
       "id": 3

@@ -53,16 +53,16 @@
       </p>
     </div>
     <div class="input-container">
-      <label for="storage">Estoque </label>
+      <label for="stock">Estoque </label>
       <input
         class="text"
         type="text"
-        id="storage"
-        name="storage"
-        v-model="storage"
+        id="stock"
+        name="stock"
+        v-model="stock"
         placeholder="Informe a quantidade em estoque"
       />
-      <p class="error" v-for="error of v$.storage.$errors" :key="error.$uid">
+      <p class="error" v-for="error of v$.stock.$errors" :key="error.$uid">
         {{ error.$message }}
       </p>
     </div>
@@ -113,7 +113,7 @@ export default {
       description: null,
       category: null,
       unit: null,
-      storage: null,
+      stock: null,
       price: null,
       destaque: null,
       unitsdata: null,
@@ -138,7 +138,7 @@ export default {
         ),
         $autoDirty: true,
       },
-      storage: {
+      stock: {
         required: helpers.withMessage(
           "Quantidade em estoque é obrigatório",
           required
@@ -172,8 +172,8 @@ export default {
         this.category != "" &&
         this.unit != null &&
         this.unit != "" &&
-        this.storage != null &&
-        this.storage != "" &&
+        this.stock != null &&
+        this.stock != "" &&
         this.price != null &&
         this.price != ""
       ) {
@@ -181,7 +181,7 @@ export default {
           description: this.description,
           category: this.category,
           unit: this.unit,
-          stock: this.storage,
+          stock: this.stock,
           price: this.price,
         };
 

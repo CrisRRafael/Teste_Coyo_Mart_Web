@@ -50,7 +50,7 @@ export default {
   },
   methods: {
     getId(id) {
-      const response = axios.get(`http://localhost:3000/products/${id}`);
+      this.$router.push(`/updateproduct/${id}`);
     },
   },
 
