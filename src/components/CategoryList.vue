@@ -1,19 +1,15 @@
 <template>
   <div class="container">
-    <table class="table-client">
+    <table class="table-categories">
       <tr class="title">
         <th>Código</th>
-        <th>Nome</th>
-        <th>Cidade</th>
-        <th>Telefone</th>
+        <th>Descrição</th>
       </tr>
-      <tr v-for="client in clients" :key="client.id">
-        <td class="client-number" @click="getId(client.id)">
-          {{ client.id }}
+      <tr v-for="category in categories" :key="category.id">
+        <td class="category-number">
+          {{ category.id }}
         </td>
-        <td>{{ client.name }}</td>
-        <td>{{ client.city }}</td>
-        <td>{{ client.telefone }}</td>
+        <td>{{ category.description }}</td>
       </tr>
     </table>
   </div>
@@ -22,22 +18,22 @@
 <script>
 import axios from "axios";
 export default {
-  name: "ClientList",
+  name: "CategoriyList",
   data() {
     return {
-      clients: null,
-      clients_id: null,
+      categories: null,
+      categories_id: null,
     };
   },
   methods: {
-    async getClients() {
-      const response = await axios.get("http://localhost:3000/clients/");
-      const clients = response.data;
-      this.clients = clients;
+    async getCategories() {
+      const response = await axios.get("http://localhost:3000/categories/");
+      const categories = response.data;
+      this.categories = categories;
     },
   },
   mounted() {
-    this.getClients();
+    this.getCategories();
   },
 };
 </script>
@@ -56,7 +52,7 @@ export default {
   justify-content: center;
 }
 
-.table-client {
+.table-categories {
   border-collapse: collapse;
 }
 .title {
