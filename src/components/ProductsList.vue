@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <h2>{{ textList }}</h2>
-    <input type="text" placeholder="Procurar" />
+    <!-- <input type="text" placeholder="Procurar" /> -->
 
     <div id="product-table">
       <div id="product-table-heading">
@@ -145,5 +145,16 @@ input {
 }
 .product-number {
   cursor: pointer;
+}
+
+@media only screen and (max-width: 750px) {
+  .container {
+    margin-left: 0;
+    margin-top: 3rem;
+  }
+
+  .container {
+    overflow-x: auto;
+  }
 }
 </style>

@@ -26,5 +26,14 @@ h1 {
   margin-left: 1rem;
   font-weight: 400;
 }
+
+@media only screen and (max-width: 800px) {
+  .container {
+    margin-left: 0;
+    margin-top: 4rem;
+    width: 100vw;
+  }
+}
 </style>
+
 >

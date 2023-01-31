@@ -1,19 +1,22 @@
-<template>
+<template class="container">
   <div class="home">
     <TitlePage :title="titlePage" />
-    <Card
-      :textCard="text"
-      :valueCard="value"
-      :image="image_src"
-      :alt="image_name"
-    />
-    <Card
-      class="card_product"
-      :textCard="text_product"
-      :valueCard="value_product"
-      :image="image_src_product"
-      :alt="image_name_product"
-    />
+    <div class="content">
+      <Card
+        class="card"
+        :textCard="text"
+        :valueCard="value"
+        :image="image_src"
+        :alt="image_name"
+      />
+      <Card
+        class="card_product"
+        :textCard="text_product"
+        :valueCard="value_product"
+        :image="image_src_product"
+        :alt="image_name_product"
+      />
+    </div>
 
     <ProductList :textList="text_list" />
   </div>
@@ -66,5 +69,27 @@ export default {
 
 h1 {
   margin-left: 60rem;
+}
+
+@media only screen and (max-width: 750px) {
+  .container {
+    align-items: center;
+    justify-content: center;
+    place-content: center;
+  }
+  .content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 0;
+  }
+  .card_product {
+    margin-top: 0;
+  }
+  .card {
+    margin-top: 1rem;
+    margin-left: 0;
+  }
 }
 </style>

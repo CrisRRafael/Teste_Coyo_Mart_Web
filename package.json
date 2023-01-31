@@ -14,6 +14,7 @@
     "json-server": "^0.17.1",
     "v-mask": "^2.3.0",
     "vue": "^3.2.13",
+    "vue-material-design-icons": "^5.1.2",
     "vue-router": "^4.0.3",
     "vuelidate": "^0.7.7"
   },
