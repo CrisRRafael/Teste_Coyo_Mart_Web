@@ -27,7 +27,7 @@ export default {
   },
   methods: {
     async getCategories() {
-      const response = await axios.get("http://localhost:3000/categories/");
+      const response = await axios.get("http://127.0.0.1:3000/categories/");
       const categories = response.data;
       this.categories = categories;
     },
@@ -50,6 +50,11 @@ export default {
   margin-top: 2rem;
   align-items: center;
   justify-content: center;
+}
+@media only screen and (max-width: 750px) {
+  .container {
+    margin-left: 0;
+  }
 }
 
 .table-categories {

@@ -55,6 +55,11 @@ export default {
   align-items: center;
   justify-content: center;
 }
+@media only screen and (max-width: 750px) {
+  .container {
+    margin-left: 0;
+  }
+}
 
 .table-client {
   border-collapse: collapse;

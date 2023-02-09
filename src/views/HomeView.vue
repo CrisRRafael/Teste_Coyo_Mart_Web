@@ -53,9 +53,13 @@ export default {
     };
   },
   async mounted() {
-    const req_products = await axios.get("http://localhost:3000/products/");
+    const req_products = await axios.get("http://127.0.0.1:3000/products/");
     const value_product = req_products.data.length;
     this.value_product = value_product;
+
+    const req_clients = await axios.get("http://127.0.0.1:3000/clients/");
+    const value = req_clients.data.length;
+    this.value = value;
   },
 };
 </script>
@@ -73,6 +77,7 @@ h1 {
 
 @media only screen and (max-width: 750px) {
   .container {
+    flex-wrap: wrap;
     align-items: center;
     justify-content: center;
     place-content: center;

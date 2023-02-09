@@ -1,7 +1,18 @@
 <template>
   <div class="container">
     <h2>{{ textList }}</h2>
-    <!-- <input type="text" placeholder="Procurar" /> -->
+    <form class="search">
+      <input
+        class="search-input"
+        type="text"
+        placeholder="Pesquisar por descrição"
+        id="description"
+      />
+
+      <button type="button" class="button-search" v-on:click="search(true)">
+        Iniciar
+      </button>
+    </form>
 
     <div id="product-table">
       <div id="product-table-heading">
@@ -11,13 +22,13 @@
         <div>Categoria:</div>
         <div>Un:</div>
         <div>Estoque:</div>
-        <div>Valor:</div>
+        <div><a href="javascript:;" v-on:click="search()">Valor:</a></div>
       </div>
 
       <div id="product-table-rows">
         <div
           class="product-table-row"
-          v-for="product of products"
+          v-for="product of itemsFiltered"
           :key="product.id"
         >
           <div class="product-number" @click="getId(product.id)">
@@ -46,17 +57,46 @@ export default {
       products: null,
       products_id: null,
       category_id: null,
+      order: "desc",
     };
+  },
+  computed: {
+    itemsFiltered() {
+      // let info = [];
+      // info = this.products.filter((product) => {
+      //   return item.name.toLowerCase().indexOf(this.search.toLowerCase()) > -1;
+      // });
+      // return info;
+      return this.products;
+    },
   },
   methods: {
     getId(id) {
       this.$router.push(`/updateproduct/${id}`);
     },
+
+    async search(validar = false) {
+      this.order = this.order === "desc" ? "asc" : "desc";
+      const description = document.getElementById("description").value;
+      if (validar) {
+        if (description === "") {
+          alert("Preencha o campo descrição");
+          document.getElementById("description").focus();
+          return;
+        }
+      }
+
+      const response = await axios.get(
+        `http://127.0.0.1:3000/products/?description=${description}&order=${this.order}`
+      );
+      let products = response.data;
+      this.products = products;
+    },
   },
 
   async mounted() {
-    const response = await axios.get("http://localhost:3000/products/");
-    const products = response.data;
+    const response = await axios.get("http://127.0.0.1:3000/products/");
+    let products = response.data;
     this.products = products;
   },
 };
@@ -79,8 +119,7 @@ h2 {
   font-weight: 400;
   font-size: 1.25;
 }
-
-input {
+/* input {
   font-size: 1rem;
   box-sizing: border-box;
 
@@ -88,12 +127,11 @@ input {
   width: 381px;
   height: 40px;
 
-  background: #ffffff;
-  border: 1px solid #d9d9d9;
+
 
   margin-left: 43.5rem;
   margin-top: 0.5rem;
-}
+} */
 
 #product-table {
   max-width: 65rem;
@@ -107,6 +145,10 @@ input {
 .product-table-row {
   display: flex;
   flex-wrap: wrap;
+}
+
+#product-table-row :focus {
+  background: #d9d9d9;
 }
 
 #product-table-heading {
@@ -144,6 +186,53 @@ input {
   width: 8%;
 }
 .product-number {
+  cursor: pointer;
+}
+
+.search {
+  display: flex;
+  gap: 1rem;
+  margin-left: 48rem;
+}
+
+.search-input {
+  font-size: 1rem;
+  box-sizing: border-box;
+  background: #ffffff;
+  border: 1px solid #d9d9d9;
+}
+
+.button-search {
+  cursor: pointer;
+
+  border: none;
+  border-radius: 8px;
+  width: 60px;
+  height: 31px;
+
+  background: #214171;
+  color: #ffffff;
+
+  font-size: 12px;
+  font-weight: 700;
+  margin-right: 3rem;
+}
+
+.order {
+  position: relative;
+  border: none;
+  border-radius: 8px;
+  width: 60px;
+  height: 31px;
+
+  background: #214171;
+  color: #ffffff;
+
+  font-size: 10px;
+  font-weight: 400;
+  right: 12rem;
+  top: 3rem;
+
   cursor: pointer;
 }
 

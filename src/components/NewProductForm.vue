@@ -1,4 +1,15 @@
 <template>
+  <div class="container-modal" v-if="showModal">
+    <transition name="fade">
+      <div class="modal-overlay" v-if="showModal"></div>
+    </transition>
+    <transition name="fade">
+      <div class="modal" v-if="showModal">
+        <h1 class="text-modal">Cadastro realizado com sucesso</h1>
+        <button class="close-modal" @click="showModal = false">Fechar</button>
+      </div>
+    </transition>
+  </div>
   <form id="product-form" @submit.prevent="createProduct">
     <span>Cadastrar Produto</span>
     <div class="input-container">
@@ -23,13 +34,17 @@
       <label for="category">Categoria </label>
       <div class="product-table-row">
         <select name="category" id="category" class="text" v-model="category">
-          <option
+          <!-- <option
             v-for="category in categoriesdata"
             :key="category.id"
             :value="category.description"
           >
             {{ category.description }}
-          </option>
+          </option> -->
+          <option key="Categoria A" value="Categoria A">Categoria A</option>
+          <option key="Categoria B" value="Categoria B">Categoria B</option>
+          <option key="Categoria C" value="Categoria C">Categoria C</option>
+          <option key="Categoria D" value="Categoria D">Categoria D</option>
         </select>
 
         <p class="error" v-for="error of v$.category.$errors" :key="error.$uid">
@@ -80,7 +95,7 @@
         {{ error.$message }}
       </p>
     </div>
-    <div class="check">
+    <!-- <div class="check">
       <input
         class="checkbox"
         type="checkbox"
@@ -89,7 +104,7 @@
         value="destaque"
       />
       <label for="destaque">Em Destaque?</label>
-    </div>
+    </div> -->
     <input
       type="submit"
       class="submit-btn"
@@ -97,12 +112,14 @@
       @click="createNewProduct()"
     />
   </form>
+  <!-- @click="createNewProduct()" -->
+  <!-- @click="showModal = true" -->
 </template>
 
 <script>
 import axios from "axios";
 import useVuelidate from "@vuelidate/core";
-import { helpers, numeric, required } from "@vuelidate/validators";
+import { helpers, numeric, required, minValue } from "@vuelidate/validators";
 
 export default {
   name: "NewProductForm",
@@ -118,6 +135,7 @@ export default {
       destaque: null,
       unitsdata: null,
       categoriesdata: null,
+      showModal: false,
     };
   },
   validations() {
@@ -147,6 +165,10 @@ export default {
           "Um valor numérico é obrigatório",
           numeric
         ),
+        minValue: helpers.withMessage(
+          "Valor tem que ser maior que 0",
+          minValue(1)
+        ),
         $autoDirty: true,
       },
       price: {
@@ -155,14 +177,18 @@ export default {
           "Um valor numérico é obrigatório",
           numeric
         ),
+        minValue: helpers.withMessage(
+          "Valor tem que ser maior que 0",
+          minValue(1)
+        ),
         $autoDirty: true,
       },
     };
   },
 
   methods: {
-    teste() {
-      console.log("Oi");
+    showModal() {
+      this.showModal = !showModal;
     },
     async createNewProduct(e) {
       if (
@@ -191,6 +217,7 @@ export default {
           })
           .then((response) => {
             this.isSuccess = true;
+            this.$router.push(`/`);
           });
         alert("Cadastro realizado com sucesso");
       } else {
@@ -208,10 +235,10 @@ export default {
       .then((response) => (this.unitsdata = response.data))
       .catch((error) => console.log(error));
 
-    axios
-      .get("http://localhost:3000/categories/")
-      .then((response) => (this.categoriesdata = response.data))
-      .catch((error) => console.log(error));
+    // axios
+    //   .get("http://localhost:3000/categories/")
+    //   .then((response) => (this.categoriesdata = response.data))
+    //   .catch((error) => console.log(error));
   },
 };
 </script>
@@ -227,11 +254,11 @@ span {
   padding: 2rem;
   gap: 1rem;
 
-  position: absolute;
+  /* position: absolute; */
   width: 800px;
   height: auto;
-  left: 256px;
-  top: 71px;
+  margin-left: 256px;
+  margin-top: 71px;
 
   background: #ffffff;
   box-shadow: 0px 0px 16px rgba(0, 0, 0, 0.15);
@@ -291,5 +318,67 @@ p {
   font-size: 0.8rem;
   margin: 3px;
   color: red;
+}
+
+.container-modal {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  z-index: 100;
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.modal {
+  align-self: center;
+
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  z-index: 100;
+
+  border-radius: 32px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+
+  width: 589px;
+  height: 277px;
+  background: #f5f5f5;
+}
+.text-modal {
+  font-size: 25px;
+  font-weight: 400;
+  color: #000000;
+}
+
+.close-modal {
+  border-radius: 8px;
+  width: 88px;
+  height: 31px;
+
+  background: #214171;
+  color: #ffffff;
+
+  font-size: 12.8;
+  font-weight: 700;
+}
+
+@media only screen and (max-width: 750px) {
+  .product-form {
+    margin-left: 0;
+  }
 }
 </style>

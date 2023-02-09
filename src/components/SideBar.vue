@@ -7,7 +7,7 @@
       </div>
       <MenuIcon
         @click="toggleMobileNav"
-        v-show="mobile"
+        v-show="this.mobile"
         class="icon-mobile"
         :class="{ 'icon-active': mobileNav }"
       />
@@ -51,7 +51,7 @@ export default {
   data() {
     return {
       mobile: null,
-      mobileNav: false,
+      mobileNav: null,
       windowWidth: null,
     };
   },
@@ -65,9 +65,11 @@ export default {
     },
     checkScreen() {
       this.windowWidth = window.innerWidth;
-
-      if (this.windowWidth <= 750) {
+      if (this.windowWidth < 750) {
         this.mobile = true;
+
+        console.log(this.mobile);
+
         return;
       }
       this.mobile = false;
@@ -86,7 +88,7 @@ export default {
 <style scoped>
 .container {
   background: #214171;
-  position: absolute;
+  position: fixed;
 }
 .navbar-not-mobile {
   display: flex;
@@ -94,6 +96,8 @@ export default {
   margin: 0;
   background: #214171;
   text-align: center;
+
+  width: 100%;
 
   width: 15rem;
   height: 100vh;
@@ -167,13 +171,14 @@ export default {
   flex-direction: column;
   background: #214171;
   width: 15rem;
-  position: fixed;
+  /* position: fixed; */
   text-align: center;
 }
 
 .navbar-mobile {
   background: #214171;
   margin-top: 0;
+  width: 100%;
 }
 
 .icon-active {

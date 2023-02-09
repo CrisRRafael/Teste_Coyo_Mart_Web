@@ -1,4 +1,23 @@
 <template>
+  <div class="container-modal">
+    <transition name="fade">
+      <div class="modal-overlay" v-if="showModal"></div>
+    </transition>
+    <transition name="fade">
+      <div class="modal" v-if="showModal">
+        <h1 class="text-modal">Tem certeza que quer excluir?</h1>
+        <div class="buttons">
+          <button class="close-modal" @click="showModal = false">Não</button>
+          <button
+            class="save-yes"
+            @click="deleteProduct(this.$route.params.id)"
+          >
+            Sim
+          </button>
+        </div>
+      </div>
+    </transition>
+  </div>
   <form id="product-form" @submit.prevent="createProduct">
     <span>Editar Produto</span>
     <div class="input-container">
@@ -22,13 +41,17 @@
     <div class="input-container">
       <label for="category">Categoria </label>
       <select name="category" id="category" class="text" v-model="category">
-        <option
+        <!-- <option
           v-for="category in categoriesdata"
           :key="category.id"
           :value="category.description"
         >
           {{ category.description }}
-        </option>
+        </option> -->
+        <option key="Categoria A" value="Categoria A">Categoria A</option>
+        <option key="Categoria B" value="Categoria B">Categoria B</option>
+        <option key="Categoria C" value="Categoria C">Categoria C</option>
+        <option key="Categoria D" value="Categoria D">Categoria D</option>
       </select>
 
       <p class="error" v-for="error of v$.category.$errors" :key="error.$uid">
@@ -80,7 +103,7 @@
         {{ error.$message }}
       </p>
     </div>
-    <div class="check">
+    <!-- <div class="check">
       <input
         class="checkbox"
         type="checkbox"
@@ -89,7 +112,7 @@
         value="destaque"
       />
       <label for="destaque">Em Destaque?</label>
-    </div>
+    </div> -->
     <div class="buttons">
       <button
         class="submit-btn"
@@ -98,13 +121,10 @@
       >
         Salvar
       </button>
-      <button
-        class="delete-btn"
-        value="Excluir"
-        @click="deleteProduct(this.$route.params.id)"
-      >
+      <button class="delete-btn" value="Excluir" @click="showModal = true">
         Excluir
       </button>
+      <!-- @click="deleteProduct(this.$route.params.id)" -->
     </div>
   </form>
 </template>
@@ -128,6 +148,7 @@ export default {
       destaque: null,
       unitsdata: null,
       categoriesdata: null,
+      showModal: false,
     };
   },
   validations() {
@@ -231,13 +252,14 @@ export default {
 
   async mounted() {
     axios
-      .get("http://localhost:3000/units/")
-      .then((response) => (this.unitsdata = response.data))
+
+      .get("http://localhost:3000/categories/")
+      .then((response) => (this.categoriesdata = response.data))
       .catch((error) => console.log(error));
 
     axios
-      .get("http://localhost:3000/categories/")
-      .then((response) => (this.categoriesdata = response.data))
+      .get("http://127.0.0.1:3000/units/")
+      .then((response) => (this.unitsdata = response.data))
       .catch((error) => console.log(error));
 
     const id = this.$route.params.id;
@@ -356,5 +378,79 @@ p {
   font-size: 0.8rem;
   margin: 3px;
   color: red;
+}
+.container-modal {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  z-index: 100;
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.modal {
+  align-self: center;
+
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  z-index: 100;
+
+  border-radius: 32px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+
+  width: 589px;
+  height: 277px;
+  background: #f5f5f5;
+}
+.text-modal {
+  font-size: 25px;
+  font-weight: 400;
+  color: #000000;
+}
+
+.buttons-modal {
+  display: flex;
+  justify-content: space-around;
+}
+
+.close-modal {
+  border: none;
+  border-radius: 8px;
+  width: 88px;
+  height: 31px;
+
+  background: #214171;
+  color: #ffffff;
+
+  font-size: 12.8;
+  font-weight: 700;
+  margin-right: 3rem;
+}
+
+.save-yes {
+  border-radius: 8px;
+  width: 88px;
+  height: 31px;
+
+  background: #ffffff;
+  color: #214171;
+
+  font-size: 12.8;
+  font-weight: 700;
 }
 </style>
